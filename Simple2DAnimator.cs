@@ -58,7 +58,7 @@ public class Simple2DAnimator : MonoBehaviour
         _spriteRenderer.sprite = _sprites[defaultSprite];
     }
 
-    public void CreateAnimation(string animationName, int[] animationFrames, int framesPerSecond = 30, bool flippedX = false, bool flippedY = false, bool loopAnimation = false)
+    public void CreateAnimation(string animationName, int[] animationFrames, int framesPerSecond = 30, bool loopAnimation = true, bool flippedX = false, bool flippedY = false)
     {
         Simple2DAnimation anim = new Simple2DAnimation(animationName, animationFrames, framesPerSecond, flippedX, flippedY, loopAnimation);
         _anims.Add(anim);
@@ -126,14 +126,14 @@ public class Simple2DAnimator : MonoBehaviour
         public bool loopAnimation;
 
 
-        public Simple2DAnimation(string animationName, int[] animationFrames, int framesPerSecond, bool flippedX, bool flippedY, bool loopAnimation)
+        public Simple2DAnimation(string animationName, int[] animationFrames, int framesPerSecond, bool loopAnimation, bool flippedX, bool flippedY)
         {
             this.animationName = animationName;
             this.animationFrames = animationFrames;
             this.framesPerSecond = framesPerSecond;
+            this.loopAnimation = loopAnimation;
             this.flippedX = flippedX;
             this.flippedY = flippedY;
-            this.loopAnimation = loopAnimation;
         }
     }
 }

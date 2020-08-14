@@ -4,6 +4,8 @@ A simple 2D animator script created for use within the Unity engine.
 
 Allows simple 2D animations to be created quickly and efficiently without the use of Animator or Animation components using only 3 lines of code.
 
+The only requirement is to make sure that any sprites you wish to use are located within "Assets/Resources/Sprites" folder.
+
 ## Step 1
 Add the Simple2DAnimator.cs to your desired GameObject, the script will create a Sprite Renderer if one is not present.
 
@@ -17,9 +19,10 @@ Store a reference to the Simple2DAnimator component:
 
 ## Step 4
 Create your animation:  
-![image](https://user-images.githubusercontent.com/26844999/90260072-e9cdae00-de42-11ea-8720-7e2208f9f950.png)
+![image](https://user-images.githubusercontent.com/26844999/90261271-a70cd580-de44-11ea-9b4f-192214049b72.png)
 
-Here you can see that I have created an animation called "Arrow" that uses sprite index 0, 1, 2, 3 playing at 4 frames per second. I have also set flipX and flipY to false and looped to true. You can create and store as many animations as you want at one time and play them when you need them.
+Here you can see that I have created an animation called "Arrow" that uses sprite index 0, 1, 2, 3 playing at 4 frames per second. There are also optional parameters for whether to loop the animation, flipping the sprite on its X axis and flipping the sprite on its Y axis, these values are defaulted to true, false, false.  
+Note: You can create and store as many animations as you want at one time and play them when you need them.
 
 ## Step 5
 Play your animation by passing the animation name you set during creation:  
