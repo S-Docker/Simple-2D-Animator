@@ -21,9 +21,11 @@ Store a reference to the Simple2DAnimator component:
 Here you can see two different examples of animations types available for creation:  
 ![image](https://user-images.githubusercontent.com/26844999/90281948-6cfffb80-de65-11ea-9aac-cee10122bd06.png)
 
-The first example is a simple fixed spacing animation that plays sprite index 0, 1, 2, 3 for 1 frame each at a rate of 4 frames per second.
-The second example is a variable spacing animation that plays index 0 for 1 frame, index 1 for 1 frames, index 2 for 1 frames and index 3 for 8 frames for a total of 11 frames at a rate of 4 frames per second.
-Variable spacing can also be achieved with the fixed spacing animation method by repeating frames, for example, {0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3} would achieve the same result as the second example.
+The first example is a simple fixed spacing animation that plays sprite index 0, 1, 2, 3 for 1 frame each at a rate of 4 frames per second.  
+
+The second example is a variable spacing animation that plays index 0 for 1 frame, index 1 for 1 frames, index 2 for 1 frames and index 3 for 8 frames for a total of 11 frames at a rate of 4 frames per second.  
+
+Variable spacing can also be achieved with the fixed spacing animation method by repeating frames, for example, new int[] {0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3} would achieve the same result as the second example.  
 
 There are also optional parameters for whether to loop the animation, flipping the sprite on its X axis and flipping the sprite on its Y axis, these values are defaulted to true, false, false.  
 
