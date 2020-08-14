@@ -33,7 +33,6 @@ public class Simple2DAnimator : MonoBehaviour
         for (int i = 0; i < data.Length; i++)   
         {
             _sprites[i] = (Sprite)data[i];
-            Debug.Log("Sprite check");
         }
     }
 
@@ -58,10 +57,30 @@ public class Simple2DAnimator : MonoBehaviour
         _spriteRenderer.sprite = _sprites[defaultSprite];
     }
 
-    public void CreateAnimation(string animationName, int[] animationFrames, int framesPerSecond = 30, bool loopAnimation = true, bool flippedX = false, bool flippedY = false)
+    public void CreateFixedSpacingAnimation(string animationName, int[] animationFrames, int framesPerSecond = 30, bool loopAnimation = true, bool flippedX = false, bool flippedY = false)
     {
-        Simple2DAnimation anim = new Simple2DAnimation(animationName, animationFrames, framesPerSecond, flippedX, flippedY, loopAnimation);
+        int[,] temp = ConvertArrayTo2D(animationFrames); // convert 1d array to 2d array for compatibility
+
+        Simple2DAnimation anim = new Simple2DAnimation(animationName, temp, framesPerSecond, loopAnimation, true, flippedX, flippedY);
         _anims.Add(anim);
+    }
+    
+    public void CreateVariableSpacingAnimation(string animationName, int[,] animationFrames, int framesPerSecond = 30, bool loopAnimation = true, bool flippedX = false, bool flippedY = false)
+    {
+        Simple2DAnimation anim = new Simple2DAnimation(animationName, animationFrames, framesPerSecond, loopAnimation, false, flippedX, flippedY);
+        _anims.Add(anim);
+    }
+
+    public int[,] ConvertArrayTo2D(int[] array){
+        int[,] temp = new int[array.Length,1];
+        Debug.Log(temp.GetLength(0));
+        
+        for (int i = 0; i < array.Length; i++)
+        {
+            temp[i,0] = array[i];
+        }
+
+        return temp;
     }
 
     public void StartAnimation(string animationName)
@@ -74,8 +93,11 @@ public class Simple2DAnimator : MonoBehaviour
             _spriteRenderer.flipY = (_currentAnimation.flippedY == true) ? true : false;
             _timeBetweenAnimChange = (float)1/_currentAnimation.framesPerSecond;
 
-            _spriteRenderer.sprite = _sprites[_currentAnimation.animationFrames[0]]; // Set animation to first sprite
-            _currentFrame++;
+            if (!_currentAnimation.fixedFrameRate)
+            {
+                _timeBetweenAnimChange *= _currentAnimation.animationFrames[0, 1];
+            }
+            _spriteRenderer.sprite = _sprites[_currentAnimation.animationFrames[0, 0]]; // Set animation to first sprite
         }
     }
 
@@ -83,23 +105,29 @@ public class Simple2DAnimator : MonoBehaviour
     {
         _timePassed += Time.deltaTime;
 
-        if (_timePassed >= _timeBetweenAnimChange){
+        while (_timePassed >= _timeBetweenAnimChange){
             _currentFrame++;
-            if (_currentFrame > _currentAnimation.animationFrames.Length - 1)
+
+            if (_currentFrame > (_currentAnimation.animationFrames.GetLength(0) - 1))
             {
                 if (!_currentAnimation.loopAnimation)
                 {
                     StopAnimation();
                     return;
-                }
+                } 
                 else
                 {
                     _currentFrame = 0;
                 }
             }
 
-            _spriteRenderer.sprite = _sprites[_currentAnimation.animationFrames[_currentFrame]];
+            _spriteRenderer.sprite = _sprites[_currentAnimation.animationFrames[_currentFrame, 0]];
             _timePassed -= _timeBetweenAnimChange;
+
+            if (!_currentAnimation.fixedFrameRate)
+            {
+                _timeBetweenAnimChange = ((float)1/_currentAnimation.framesPerSecond) * _currentAnimation.animationFrames[_currentFrame, 1];
+            }
         }
     }
 
@@ -109,7 +137,8 @@ public class Simple2DAnimator : MonoBehaviour
         _spriteRenderer.sprite = _sprites[defaultSprite];
     }
 
-    void Update() {
+    void Update() 
+    {
         if (_currentAnimation != null)
         {
             PlayAnimation();
@@ -119,19 +148,20 @@ public class Simple2DAnimator : MonoBehaviour
     public class Simple2DAnimation
     {
         public string animationName;
-        public int[] animationFrames;
+        public int[,] animationFrames;
         public int framesPerSecond;
+        public bool loopAnimation;
+        public bool fixedFrameRate;
         public bool flippedX;
         public bool flippedY;
-        public bool loopAnimation;
 
-
-        public Simple2DAnimation(string animationName, int[] animationFrames, int framesPerSecond, bool loopAnimation, bool flippedX, bool flippedY)
+        public Simple2DAnimation(string animationName, int[,] animationFrames, int framesPerSecond, bool loopAnimation, bool fixedFrameRate, bool flippedX, bool flippedY)
         {
             this.animationName = animationName;
             this.animationFrames = animationFrames;
             this.framesPerSecond = framesPerSecond;
             this.loopAnimation = loopAnimation;
+            this.fixedFrameRate = fixedFrameRate;
             this.flippedX = flippedX;
             this.flippedY = flippedY;
         }
