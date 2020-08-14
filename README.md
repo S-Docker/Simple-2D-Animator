@@ -19,7 +19,7 @@ Store a reference to the Simple2DAnimator component:
 
 ## Step 4
 Here you can see two different examples of animations types available for creation:  
-![image](https://user-images.githubusercontent.com/26844999/90281948-6cfffb80-de65-11ea-9aac-cee10122bd06.png)
+![image](https://user-images.githubusercontent.com/26844999/90286761-66c24d00-de6e-11ea-9566-ff50648a8345.png)
 
 The first example is a simple fixed spacing animation that plays sprite index 0, 1, 2, 3 for 1 frame each at a rate of 4 frames per second.  
 
