@@ -19,7 +19,7 @@ public class Simple2DAnimator : MonoBehaviour
     float _timeBetweenAnimChange;
     float _timePassed = 0f;
 
-    public void OnValidate() 
+    void OnValidate() 
     {
         LoadSprites();
         SetUpSpriteRenderer();
@@ -103,7 +103,7 @@ public class Simple2DAnimator : MonoBehaviour
         }
     }
 
-    void StopAnimation()
+    public void StopAnimation()
     {
         _currentAnimation = null;
         _spriteRenderer.sprite = _sprites[defaultSprite];
