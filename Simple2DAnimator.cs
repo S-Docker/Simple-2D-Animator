@@ -5,19 +5,19 @@ using UnityEngine;
 public class Simple2DAnimator : MonoBehaviour
 {
     public Texture2D spriteTexture;
-    private SpriteRenderer _spriteRenderer;
-    private Sprite[] _sprites;
+    private SpriteRenderer spriteRenderer;
+    private Sprite[] sprites;
     
     // Default sprite settings
     public int defaultSprite = 0;
     public string sortingLayer = "Default";
     public int sortOrder = 1;
 
-    List<Simple2DAnimation> _anims = new List<Simple2DAnimation>();
-    Simple2DAnimation _currentAnimation;
-    int _currentFrame = 0;
-    float _timeBetweenAnimChange;
-    float _timePassed = 0f;
+    List<Simple2DAnimation> anims = new List<Simple2DAnimation>();
+    Simple2DAnimation currentAnim;
+    int currentFrame = 0;
+    float timeBetweenAnimChange;
+    float timePassed = 0f;
 
     void OnValidate() 
     {
@@ -28,11 +28,11 @@ public class Simple2DAnimator : MonoBehaviour
     void LoadSprites()
     {
         Object[] data = Resources.LoadAll<Sprite>("Sprites/" + spriteTexture.name.ToString());
-        _sprites = new Sprite[data.Length];
+         = new Sprite[data.Length];
 
         for (int i = 0; i < data.Length; i++)   
         {
-            _sprites[i] = (Sprite)data[i];
+            sprites[i] = (Sprite)data[i];
         }
     }
 
@@ -40,21 +40,21 @@ public class Simple2DAnimator : MonoBehaviour
     {
         if (this.GetComponent<SpriteRenderer>() != null)
         {
-            _spriteRenderer = this.GetComponent<SpriteRenderer>();
+            spriteRenderer = this.GetComponent<SpriteRenderer>();
         } 
         else if (this.GetComponentInChildren<SpriteRenderer>() != null)
         {
-            _spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
+             = this.GetComponentInChildren<SpriteRenderer>();
         } 
         else 
         {
-            _spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
+            spriteRenderer = this.gameObject.AddComponent<SpriteRenderer>();
         }
 
-        _spriteRenderer = this.GetComponent<SpriteRenderer>();
-        _spriteRenderer.sortingLayerName = sortingLayer;
-        _spriteRenderer.sortingOrder = sortOrder;
-        _spriteRenderer.sprite = _sprites[defaultSprite];
+        spriteRenderer = this.GetComponent<SpriteRenderer>();
+        spriteRenderer.sortingLayerName = sortingLayer;
+        spriteRenderer.sortingOrder = sortOrder;
+        spriteRenderer.sprite = sprites[defaultSprite];
     }
 
     public void CreateFixedSpacingAnimation(string animationName, int[] animationFrames, int framesPerSecond = 30, bool loopAnimation = true, bool flippedX = false, bool flippedY = false)
@@ -62,13 +62,13 @@ public class Simple2DAnimator : MonoBehaviour
         int[,] temp = ConvertArrayTo2D(animationFrames); // convert 1d array to 2d array for compatibility
 
         Simple2DAnimation anim = new Simple2DAnimation(animationName, temp, framesPerSecond, loopAnimation, true, flippedX, flippedY);
-        _anims.Add(anim);
+        anims.Add(anim);
     }
     
     public void CreateVariableSpacingAnimation(string animationName, int[,] animationFrames, int framesPerSecond = 30, bool loopAnimation = true, bool flippedX = false, bool flippedY = false)
     {
         Simple2DAnimation anim = new Simple2DAnimation(animationName, animationFrames, framesPerSecond, loopAnimation, false, flippedX, flippedY);
-        _anims.Add(anim);
+        anims.Add(anim);
     }
 
     public int[,] ConvertArrayTo2D(int[] array){
@@ -85,61 +85,61 @@ public class Simple2DAnimator : MonoBehaviour
 
     public void StartAnimation(string animationName)
     {
-        _currentAnimation = _anims.Find(item => item.animationName.Contains(animationName));
+        currentAnim = anims.Find(item => item.animationName.Contains(animationName));
 
-        if (_currentAnimation != null)
+        if (currentAnim != null)
         {
-            _spriteRenderer.flipX = (_currentAnimation.flippedX == true) ? true : false;
-            _spriteRenderer.flipY = (_currentAnimation.flippedY == true) ? true : false;
-            _timeBetweenAnimChange = (float)1/_currentAnimation.framesPerSecond;
+            spriteRenderer.flipX = (currentAnim.flippedX == true) ? true : false;
+            spriteRenderer.flipY = (currentAnim.flippedY == true) ? true : false;
+            timeBetweenAnimChange = (float)1/currentAnim.framesPerSecond;
 
-            if (!_currentAnimation.fixedFrameRate)
+            if (!currentAnim.fixedFrameRate)
             {
-                _timeBetweenAnimChange *= _currentAnimation.animationFrames[0, 1];
+                timeBetweenAnimChange *= currentAnim.animationFrames[0, 1];
             }
-            _spriteRenderer.sprite = _sprites[_currentAnimation.animationFrames[0, 0]]; // Set animation to first sprite
+            spriteRenderer.sprite = sprites[currentAnim.animationFrames[0, 0]]; // Set animation to first sprite
         }
     }
 
     void PlayAnimation()
     {
-        _timePassed += Time.deltaTime;
+        timePassed += Time.deltaTime;
 
-        while (_timePassed >= _timeBetweenAnimChange){
-            _currentFrame++;
+        while (timePassed >= timeBetweenAnimChange){
+            currentFrame++;
 
-            if (_currentFrame > (_currentAnimation.animationFrames.GetLength(0) - 1))
+            if (currentFrame > (currentAnim.animationFrames.GetLength(0) - 1))
             {
-                if (!_currentAnimation.loopAnimation)
+                if (!currentAnim.loopAnimation)
                 {
                     StopAnimation();
                     return;
                 } 
                 else
                 {
-                    _currentFrame = 0;
+                    currentFrame = 0;
                 }
             }
 
-            _spriteRenderer.sprite = _sprites[_currentAnimation.animationFrames[_currentFrame, 0]];
-            _timePassed -= _timeBetweenAnimChange;
+            spriteRenderer.sprite = sprites[currentAnim.animationFrames[currentFrame, 0]];
+            timePassed -= timeBetweenAnimChange;
 
-            if (!_currentAnimation.fixedFrameRate)
+            if (!currentAnim.fixedFrameRate)
             {
-                _timeBetweenAnimChange = ((float)1/_currentAnimation.framesPerSecond) * _currentAnimation.animationFrames[_currentFrame, 1];
+                timeBetweenAnimChange = ((float)1/currentAnim.framesPerSecond) * currentAnim.animationFrames[currentFrame, 1];
             }
         }
     }
 
     public void StopAnimation()
     {
-        _currentAnimation = null;
-        _spriteRenderer.sprite = _sprites[defaultSprite];
+        currentAnim = null;
+        spriteRenderer.sprite = sprites[defaultSprite];
     }
 
     void Update() 
     {
-        if (_currentAnimation != null)
+        if (currentAnim != null)
         {
             PlayAnimation();
         }
