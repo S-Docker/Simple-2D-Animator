@@ -44,7 +44,7 @@ public class Simple2DAnimator : MonoBehaviour
         } 
         else if (this.GetComponentInChildren<SpriteRenderer>() != null)
         {
-             = this.GetComponentInChildren<SpriteRenderer>();
+            spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
         } 
         else 
         {
